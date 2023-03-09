@@ -33,7 +33,7 @@ export default function ({title,description,children}) {
             primary:{
                 main:'#f0c000',
             },
-        secondary:{
+        secondary:{ 
             main:'#208080'
          }   
         }
