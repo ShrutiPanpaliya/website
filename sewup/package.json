@@ -1,0 +1,20 @@
+{
+  "name": "sewup",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.12.4",
+    "eslint": "^8.35.0",
+    "js-cookie": "^3.0.1",
+    "next": "13.2.3",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-hydration-provider": "^1.0.2"
+  }
+}
