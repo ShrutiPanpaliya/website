@@ -4,7 +4,7 @@ const Data={
         {
             name:'hello',
             category:'1',
-            slug:'1',
+            slug:'One',
             image:'/images/2.jpg',
             price:40,
             rating:4.5,

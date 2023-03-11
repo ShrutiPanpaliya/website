@@ -1,5 +1,5 @@
 import React ,{useContext}from 'react'
-import { AppBar,Switch, createTheme, CssBaseline, Link, ThemeProvider } from '@material-ui/core'
+import { AppBar,Switch, createTheme, CssBaseline, Link, ThemeProvider, Badge } from '@material-ui/core'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Container from '@material-ui/core/Container'
@@ -10,7 +10,7 @@ import useStyles from '../utils/Styles';
 import Cookies from 'js-cookie'
 export default function ({title,description,children}) {
     const { state, dispatch } = useContext(Store);
-  const { darkMode } = state;
+  const { darkMode,cart } = state;
     const theme =createTheme({
         typography:{
             h1:{
@@ -56,16 +56,20 @@ export default function ({title,description,children}) {
         <AppBar position='static' className={classes.navbar}>
             <Toolbar>
                 <NextLink href='/' passHref>
-                <Link><Typography className={classes.brand}>Sewup</Typography></Link>
+                <Link><a><Typography className={classes.brand}><a>Sewup</a></Typography></a></Link>
                 </NextLink>
                 <div className={classes.grow}></div>
                     <div>
                     <Switch checked={darkMode} onChange={darkModeHandler}></Switch>
                         <NextLink href='/cart' passHref>
-                            <Link>Cart</Link>
+                            <Link>
+                            <a>{cart.cartItems.length>0 ?(<Badge  color="secondary"badgeContent={cart.cartItems.length}>Cart</Badge>):
+                            ('Cart')}</a>
+                            
+                            </Link>
                         </NextLink>
                         <NextLink href='/login' passHref>
-                            <Link>Login</Link>
+                            <Link><a>Login</a></Link>
                         </NextLink>
                     </div>
                 
@@ -75,7 +79,7 @@ export default function ({title,description,children}) {
             {children}
         </Container>
         <footer className={classes.footer}>
-            <Typography>All Rights Reserved.NextSewup</Typography>
+            <Typography><a>All Rights Reserved.NextSewup</a></Typography>
         </footer>
         </ThemeProvider>
     </div>
