@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
-// import {useRouter} from 'next/router'
+import {useRouter} from 'next/router'
 // import Data from '/utils/Data';
+import dynamic from 'next/dynamic';
 import db from '@/utils/db';
 import Product from '@/models/Product';
 import NextLink from 'next/link'
@@ -10,12 +11,13 @@ import {Button,Card,Grid,Link, ListItem,List, Typography } from '@material-ui/co
 import Layout from '/components/Layout';
 import useStyles from '@/utils/Styles';
 import { Store } from '@/utils/Store';
-export default function productScreen(props) {
-  const {dispatch}=useContext(Store);
+import { Router } from 'next/router';
+function productScreen(props) {
+  const {state,dispatch}=useContext(Store);
   const {product}= props;
   
    const classes=useStyles();
-  // const router=useRouter()
+   const router=useRouter()
   //  const {slug}=router.query;
   // const product=Data.products.find((a)=> a.slug===slug);
  if(!product)
@@ -23,13 +25,16 @@ export default function productScreen(props) {
   return <div>Product Not Found</div>
  }
  const addToCartHandler=async()=>{
+  const existItem=state.cart.cartItems.find((x)=>x._id===product._id);
+  const quantity=existItem?existItem.quantity+1:1;
   const {data}=await axios.get(`/api/products/${product._id}`);
-  if(data.countInStock<=0){
+  if(data.countInStock<quantity){
     window.alert('Product out of Stock')
     return;
   
   }
-  dispatch({type:'CART_ADD_ITEM',payload:{...product,quantity:1}}) 
+  dispatch({type:'CART_ADD_ITEM',payload:{...product,quantity}}) 
+  router.push('/cart')
 };
  return(
   
@@ -114,3 +119,4 @@ export async function getServerSideProps(context) {
     },
   };
 }
+export default dynamic(()=>Promise.resolve(productScreen),{ssr:false});

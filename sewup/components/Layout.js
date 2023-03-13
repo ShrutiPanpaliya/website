@@ -6,9 +6,10 @@ import Container from '@material-ui/core/Container'
 import { Store } from '@/utils/Store'
 import NextLink from 'next/link'
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
 import useStyles from '../utils/Styles';
 import Cookies from 'js-cookie'
-export default function ({title,description,children}) {
+ function Layout({title,description,children}) {
     const { state, dispatch } = useContext(Store);
   const { darkMode,cart } = state;
     const theme =createTheme({
@@ -56,20 +57,20 @@ export default function ({title,description,children}) {
         <AppBar position='static' className={classes.navbar}>
             <Toolbar>
                 <NextLink href='/' passHref>
-                <Link><a><Typography className={classes.brand}><a>Sewup</a></Typography></a></Link>
+                <Link><Typography className={classes.brand}>Sewup</Typography></Link>
                 </NextLink>
                 <div className={classes.grow}></div>
                     <div>
                     <Switch checked={darkMode} onChange={darkModeHandler}></Switch>
                         <NextLink href='/cart' passHref>
                             <Link>
-                            <a>{cart.cartItems.length>0 ?(<Badge  color="secondary"badgeContent={cart.cartItems.length}>Cart</Badge>):
-                            ('Cart')}</a>
+                            {cart.cartItems.length>0 ?(<Badge  color="secondary"badgeContent={cart.cartItems.length}>Cart</Badge>):
+                            ('Cart')}
                             
                             </Link>
                         </NextLink>
                         <NextLink href='/login' passHref>
-                            <Link><a>Login</a></Link>
+                            <Link>Login</Link>
                         </NextLink>
                     </div>
                 
@@ -79,7 +80,7 @@ export default function ({title,description,children}) {
             {children}
         </Container>
         <footer className={classes.footer}>
-            <Typography><a>All Rights Reserved.NextSewup</a></Typography>
+            <Typography>All Rights Reserved.NextSewup</Typography>
         </footer>
         </ThemeProvider>
     </div>
@@ -87,3 +88,5 @@ export default function ({title,description,children}) {
     
   )
 }
+export default dynamic(()=>Promise.resolve(Layout),{ssr:false});
+
