@@ -16,7 +16,7 @@ export default function Login() {
         email,
         password,
       });
-      alert('succss login');
+      alert('success login');
     } catch (err) {
       alert(err.response.data ? err.response.data.message : err.message);
     }
