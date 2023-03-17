@@ -6,7 +6,10 @@ const initialState={
     darkMode: Cookies.get('darkMode')==='ON'? true:false,
     cart:{
         cartItems:Cookies.get('cartItems')?JSON.parse(Cookies.get('cartItems')):[]
-    }
+    },
+        userinfo:Cookies.get('userinfo')?JSON.parse(Cookies.get('userinfo').toString()):null
+
+        
 };
 function reducer(state,action){
     switch(action.type){
@@ -26,6 +29,10 @@ function reducer(state,action){
                 Cookies.set('cartItems', JSON.stringify(cartItems));   
             return {...state,cart:{...state.cart,cartItems}};
             }    
+        case 'USER_LOGIN':
+            return {...state,userinfo:action.payload}
+        case 'USER_LOGOUT':
+            return {...state,userinfo:null,cart:{cartItems:[]}}
             default:
             return state;
     }

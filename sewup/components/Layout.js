@@ -1,5 +1,6 @@
 import React ,{useContext}from 'react'
-import { AppBar,Switch, createTheme, CssBaseline, Link, ThemeProvider, Badge } from '@material-ui/core'
+import { AppBar,Switch, createTheme, CssBaseline, Link, ThemeProvider, Badge, Button, Menu, MenuItem } from '@material-ui/core'
+
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Container from '@material-ui/core/Container'
@@ -9,9 +10,14 @@ import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import useStyles from '../utils/Styles';
 import Cookies from 'js-cookie'
+
+import PopupState,{ bindTrigger } from 'material-ui-popup-state'
+import { bindMenu } from 'material-ui-popup-state/hooks'
+import { useRouter } from 'next/router'
  function Layout({title,description,children}) {
+    const router =useRouter();
     const { state, dispatch } = useContext(Store);
-  const { darkMode,cart } = state;
+  const { darkMode,cart,userinfo } = state;
     const theme =createTheme({
         typography:{
             h1:{
@@ -45,6 +51,12 @@ import Cookies from 'js-cookie'
         const newDarkMode=!darkMode;
         Cookies.set("darkMode",newDarkMode?'ON':'OFF');
     }
+    function logoutClickHandler(){
+    dispatch({ type: 'USER_LOGOUT' });
+    Cookies.remove('userInfo');
+    Cookies.remove('cartItems');
+    router.push('/');
+    }
   return (
     <div>
         <Head>
@@ -64,14 +76,32 @@ import Cookies from 'js-cookie'
                     <Switch checked={darkMode} onChange={darkModeHandler}></Switch>
                         <NextLink href='/cart' passHref>
                             <Link>
-                            {cart.cartItems.length>0 ?(<Badge  color="secondary"badgeContent={cart.cartItems.length}>Cart</Badge>):
+                            {cart.cartItems.length>0 ?(<Badge  color="secondary"badgeContent={cart.cartItems.length}> Cart  </Badge>):
                             ('Cart')}
                             
                             </Link>
                         </NextLink>
-                        <NextLink href='/login' passHref>
-                            <Link>Login</Link>
+                       
+                            {userinfo?
+                            <PopupState variant="popover" popupId="demo-popup-menu">
+                            {(popupState) => (
+                              <React.Fragment>
+                            <Button   {...bindTrigger(popupState)} className={classes.navbarButton} padding={10}> {userinfo.name}</Button>
+                             <Menu {...bindMenu(popupState)}>
+                             <MenuItem onClick={popupState.close}>Profile</MenuItem>
+                             <MenuItem onClick={popupState.close}>My account</MenuItem>
+                             <MenuItem  onClick={() => { popupState.close(); logoutClickHandler();
+        }} >Logout</MenuItem>
+                           </Menu>
+                           </React.Fragment>)}
+                           </PopupState>
+                           :
+                             <NextLink href='/login' passHref>
+                                 <Link>Login</Link>
                         </NextLink>
+
+                            }
+                           
                     </div>
                 
             </Toolbar>
