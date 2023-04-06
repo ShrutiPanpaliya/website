@@ -15,10 +15,7 @@ export default function Register() {
    const router =useRouter();
    const {redirect}=router.query;
    const classes=useStyles();
-   const [name,setName]=useState('');
-   const [email,setEmail]=useState('');
-   const[password,setPassword]=useState('');
-   const[confirmpassword,setConfirmPassword]=useState('');
+   
    const { state, dispatch } = useContext(Store);
    const { userinfo } = state;
    useEffect(()=>
