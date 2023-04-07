@@ -1,20 +1,17 @@
 import Layout from '@/components/Layout'
 import useStyles from '@/utils/Styles'
-import { Button, Link, List, ListItem, TextField, Typography } from '@material-ui/core'
-import React, { useContext, useEffect, useState } from 'react'
-import NextLink from 'next/link'
-import axios from 'axios'
+import { Button, List, ListItem, TextField, Typography } from '@material-ui/core'
+import React, { useContext, useEffect } from 'react'
 import { Store } from '@/utils/Store'
 import { useRouter } from 'next/router'
 import Cookies from 'js-cookie'
-import CheckoutWizard from '@/components/checkoutWizard'
 import {Controller, useForm } from 'react-hook-form'
-
+import CheckoutWizard from '@/components/CheckoutWizard'
 
 export default function Shipping() {
   const {handleSubmit,control,formState:{errors},setValue,}=useForm();
    const router =useRouter();
-   const {redirect}=router.query;
+   
    const classes=useStyles();
    
    const { state, dispatch } = useContext(Store);
@@ -35,8 +32,8 @@ export default function Shipping() {
    const submitHandler =  ({fullName,address,city,state,country}) => {
     
       dispatch({type:'SAVE_SHIPPING_ADDRESS',payload:{fullName,address,city,state,country}})
-
-      Cookies.set('shippingAddress', JSON.stringify({fullName ,address ,city ,state ,country }));
+      var stringData={fullName ,address ,city ,state ,country };
+      Cookies.set('shippingAddress', JSON.stringify(stringData));
    
       router.push('/payment' )    
   };
