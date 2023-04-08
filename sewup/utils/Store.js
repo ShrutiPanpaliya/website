@@ -8,6 +8,7 @@ const initialState={
         cartItems:Cookies.get('cartItems')?JSON.parse(Cookies.get('cartItems')):[]
         ,
         shippingAddress:Cookies.get('shippingAddress')?JSON.parse(Cookies.get('shippingAddress').toString()):{},
+        paymentMethod:Cookies.get('paymentMethod')?(Cookies.get('paymentMethod').toString()):'',
     },
         userinfo:Cookies.get('userinfo')?JSON.parse(Cookies.get('userinfo').toString()):null
 
