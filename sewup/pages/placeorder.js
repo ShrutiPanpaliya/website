@@ -1,19 +1,22 @@
 import Layout from '@/components/Layout';
 import { Store } from '@/utils/Store'
 import dynamic from 'next/dynamic';
-import { MenuItem,Card,List,Grid, Link,Select,Table,TableBody,TableCell, TableContainer, TableHead, TableRow, Typography, Button, ListItem } from '@material-ui/core';
-import React, { useContext, useEffect } from 'react'
+import { MenuItem,Card,List,Grid, Link,Select,Table,TableBody,TableCell, TableContainer, TableHead, TableRow, Typography, Button, ListItem, CircularProgress } from '@material-ui/core';
+import React, { useContext, useEffect, useState } from 'react'
 import NextLink from 'next/link';
 import axios from 'axios';
 import CheckoutWizard from '@/components/CheckoutWizard';
 import Image from 'next/image'
 import { useRouter } from 'next/router';
 import useStyles from '@/utils/Styles';
+import { getError } from '@/utils/error';
+import Cookies from 'js-cookie';
  function PlaceOrder() {
     const classes =useStyles()
     const router=useRouter();
+    const [loading,setLoading]=useState(false);
     const {state,dispatch}=useContext(Store)
-    const {cart:{cartItems,shippingAddress,paymentMethod}}=state;
+    const {userinfo,cart:{cartItems,shippingAddress,paymentMethod}}=state;
     const round2=num=>Math.round(num*100 + Number.EPSILON)/100;
     const itemsPrice =round2(cartItems.reduce(
         (a,c)=>a +c.price*c.quantity,0
@@ -29,6 +32,27 @@ import useStyles from '@/utils/Styles';
    }
    
    },[])
+   const placeOrderHandler=async()=>
+   {
+    try{
+        setLoading(true);
+        const {data}=await axios.post('/api/orders',{
+            orderItems:cartItems,shippingAddress,paymentMethod,itemsPrice,shippingPrice,taxPrice,totalPrice
+        },{
+            headers:{authorization:`Bearer ${userinfo.token}`}
+        })
+        dispatch({type:'CART_CLEAR'})
+        Cookies.remove('cartItems')
+        setLoading(false);
+        router.push(`/order/${data._id}`)
+    }
+    catch(err){
+        setLoading(false)
+        alert(getError(err))
+
+    }
+
+   }
     return <Layout title="Shopping Cart">
         <CheckoutWizard activeStep={3}></CheckoutWizard>
         <Typography component="h1" variant="h1">Place Order</Typography>
@@ -168,10 +192,13 @@ import useStyles from '@/utils/Styles';
                             
                         </ListItem>
                         <ListItem>
-                            <Button  variant='contained' color="primary" fullWidth>
+                            <Button onClick={placeOrderHandler} variant='contained' color="primary" fullWidth>
                                 Place Order
                             </Button>
                         </ListItem>
+                        {loading && (<ListItem>
+                            <CircularProgress/>
+                        </ListItem>)}
                     </List>
                 </Card>
             </Grid>
