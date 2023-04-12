@@ -90,21 +90,27 @@ function Order({params}) {
     };
     loadPaypalScript();
    }
-},[order,successPay])
-function createOrder(data,actions){
-    return actions.order.create({
-        purchase_units:[
-            {
-                amount:{value:totalPrice},
+},[order, successPay])
+function createOrder(data, actions) {
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            amount: { value: totalPrice },
+          },
+        ],
+      })
+      .then((orderID) => {
+        return orderID;
+      });
+  }
 
-            },],
-    }).then((orderID)=>{return orderID})
-}
 function onApprove(data,actions){
+    console.log(data)
     return actions.order.capture().then(async function (details){
         try{
             dispatch({type:'PAY_REQUEST'});
-            const {data}=await axios.put(`/api/orders/${order._id}/pay`,details,
+            const { data }=await axios.put(`/api/orders/${order._id}/pay`,details,
             {
                 headers:{authorization:`Bearer ${userinfo.token}`}
             })
@@ -286,12 +292,12 @@ function onError(err){
                                         >
 
                                         </PayPalButtons></div>
-                                       
+
                                     )}
                                 </ListItem>
                             )
                         }
-                        
+
                     </List>
                 </Card>
             </Grid>
