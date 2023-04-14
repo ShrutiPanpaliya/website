@@ -8,12 +8,16 @@ import { Store } from '@/utils/Store'
 import { useRouter } from 'next/router'
 import Cookies from 'js-cookie'
 import {Controller, useForm } from 'react-hook-form'
-import { ToastContainer, toast } from 'react-toastify';
+import {Toast as toast, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { getError } from '@/utils/error'
 
 
 export default function Login() {
+//   <ToastContainer
+//   autoClose={5000}
+//   hideProgressBar={true}
+// />
   const {handleSubmit,control,formState:{errors}}=useForm();
    const router =useRouter();
    const {redirect}=router.query;
@@ -45,9 +49,9 @@ export default function Login() {
       router.push(redirect || '/' )    
     } catch (err) {
       
-      // alert(err.response.data ? err.response.data.message : err.message);
+      alert(err.response.data ? err.response.data.message : err.message);
       // toast.error(err.response.data ? err.response.data.message : err.message);
-      toast(getError(err))
+      // toast.error(getError(err))
     
     }
   };
@@ -134,6 +138,7 @@ export default function Login() {
                 </ListItem>
             </List>
         </form>
+        
     </Layout>
     
   )

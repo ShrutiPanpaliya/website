@@ -10,7 +10,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router';
 import useStyles from '@/utils/Styles';
 import { getError } from '@/utils/error';
-import Cookies from 'js-cookie';
+
 import { useReducer } from 'react';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 function reducer(state,action)

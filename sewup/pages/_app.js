@@ -9,6 +9,7 @@ export default function App({ Component, pageProps }) {
     <StoreProvider>
       <PayPalScriptProvider deferLoading={true}>
     <Component {...pageProps} />
+    
     </PayPalScriptProvider>
     </StoreProvider>
   );
