@@ -1,59 +1,89 @@
 import Layout from '@/components/Layout'
-import useStyles from '@/utils/Styles'
-import { Button, Link, List, ListItem, TextField, Typography } from '@material-ui/core'
-import React, { useContext, useEffect, useState } from 'react'
-import NextLink from 'next/link'
-import axios from 'axios'
 import { Store } from '@/utils/Store'
+import useStyles from '@/utils/Styles'
+import { getError } from '@/utils/error'
+import { Button, Card, CircularProgress, Grid, List, ListItem, ListItemText, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@material-ui/core'
+import axios from 'axios'
 import { useRouter } from 'next/router'
+import React, { useContext, useEffect, useReducer } from 'react'
+import NexLink from 'next/link'
+import dynamic from 'next/dynamic';
+import { Controller, useForm } from 'react-hook-form'
 import Cookies from 'js-cookie'
-import {Controller, useForm } from 'react-hook-form'
 
+  
+  function Profile() {
+    const { state,dispatch } = useContext(Store);
+    const router = useRouter();
+    const classes = useStyles();
+    const { userinfo } = state;
+    const {handleSubmit,control,setValue,formState:{errors}}=useForm();
+  
+    useEffect(()=>{
+        if(!userinfo)
+        {
+          return  router.push('/login')
+        }
+        setValue('name',userinfo.name);
+        setValue('email',userinfo.email);
 
-export default function Register() {
-  const {handleSubmit,control,formState:{errors}}=useForm();
-   const router =useRouter();
-   const {redirect}=router.query;
-   const classes=useStyles();
+    },[])
+    
+    const submitHandler = async ({email,password,name,confirmPassword}) => {
    
-   const { state, dispatch } = useContext(Store);
-   const { userinfo } = state;
-   useEffect(()=>
-   {
-    if(userinfo)
-   {
-    router.push("/")
-   }
-   },[])
-   
-   const submitHandler = async ({email,password,name,confirmPassword}) => {
-   
-    if(password!=confirmPassword)
-    {
-      alert("Passwords Don't match")
-      return;
-    }
-    try {
-      const { data } = await axios.post('/api/users/register', {
-        name,
-        email,
-        password,
-      });
-      
-      dispatch({type:'USER_LOGIN',payload:data})
-      
-      Cookies.set('userinfo', JSON.stringify(data));
-      router.push(redirect || '/' )    
-    } catch (err) {
-      alert(err.response.data ? err.response.data.message : err.message);
-    }
-  };
-   return (
-    <Layout title="Register">
-        <form onSubmit={handleSubmit(submitHandler)}className={classes.form}>
-            <Typography component="h1" variant="h1">
-                REGISTER
-            </Typography>
+        if(password!=confirmPassword)
+        {
+          alert("Passwords Don't match")
+          return;
+        }
+        try {
+          const { data } = await axios.put('/api/users/profile', {
+            name,
+            email,
+            password,
+          },
+          {
+            headers:{authorization:`Bearer ${userinfo.token}`}
+          });
+          
+          dispatch({type:'USER_LOGIN',payload:data})
+          
+          Cookies.set('userinfo', JSON.stringify(data));
+             
+        } catch (err) {
+          alert(err.response.data ? err.response.data.message : err.message);
+        }
+      };
+    return (
+      <Layout title="Profile">
+        <Grid container spacing={1}>
+          <Grid item md={3} xs={12}>
+            <Card className={classes.section}>
+              <List>
+                <NexLink href="/profile" passHref>
+                  <ListItem selected button component="a">
+                    <ListItemText primary="User Profile"></ListItemText>
+                  </ListItem>
+                </NexLink>
+                <NexLink href="/order-history" passHref>
+                  <ListItem  button component="a">
+                    <ListItemText primary="Order History"></ListItemText>
+                  </ListItem>
+                </NexLink>
+              </List>
+            </Card>
+          </Grid>
+          <Grid item md={9} xs={12}>
+            <Card className={classes.section}>
+              <List>
+                <ListItem>
+                  <Typography component="h1" variant="h1">
+                    Profile
+                  </Typography>
+                </ListItem>
+                <ListItem>
+                <form onSubmit={handleSubmit(submitHandler)}className={classes.form}>
+            
             <List>
             <ListItem>
                 <Controller
@@ -121,8 +151,7 @@ export default function Register() {
               control={control}
               defaultValue=""
               rules={{
-                required: true,
-                minLength: 6,
+                validate:(value)=>(value===''||value.length >5 || 'Password length is more than 5')
               }}
               render={({ field }) => (
                 <TextField
@@ -134,10 +163,8 @@ export default function Register() {
                   error={Boolean(errors.password)}
                   helperText={
                     errors.password
-                      ? errors.password.type === 'minLength'
                         ? 'Password length is more than 5'
-                        : 'Password is required'
-                      : ''
+                        : ''
                   }
                   {...field}
                 ></TextField>
@@ -183,15 +210,17 @@ export default function Register() {
                     type="submit"
                     fullWidth 
                     color="primary"
-                    >Register</Button>
-                </ListItem>
-                <ListItem>
-                   Already have an account? &nbsp;
-                    <NextLink href={`/login?redirect=${redirect || '/'}`} passHref><Link>Login</Link></NextLink>
+                    >Update</Button>
                 </ListItem>
             </List>
         </form>
-    </Layout>
-    
-  )
-}
+                </ListItem>
+              </List>
+            </Card>
+          </Grid>
+        </Grid>
+      </Layout>
+    );
+  }
+  
+  export default dynamic(() => Promise.resolve(Profile), { ssr: false });
