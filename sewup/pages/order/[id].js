@@ -280,23 +280,27 @@ function onError(err){
                             
                         </ListItem>
                         {
-                            !isPaid && (
-                                <ListItem>
-                                    {isPending?(<CircularProgress/>):
-
-                                    (
-                                        <div className={classes.fullWidth}> <PayPalButtons
-                                        createOrder={createOrder}
-                                        onApprove={onApprove}
-                                        onError={onError}
-                                        >
-
-                                        </PayPalButtons></div>
-
-                                    )}
-                                </ListItem>
-                            )
+                             
+                             paymentMethod=== 'PayPal' && !isPaid && (
+                                    <ListItem>
+                                        {isPending?(<CircularProgress/>):
+                                       
+                                        (
+                                            <div className={classes.fullWidth}> <PayPalButtons
+                                            createOrder={createOrder}
+                                            onApprove={onApprove}
+                                            onError={onError}
+                                            >
+    
+                                            </PayPalButtons></div>
+    
+                                        )}
+                                    </ListItem>
+                                )
+                            
                         }
+
+                       
 
                     </List>
                 </Card>

@@ -8,7 +8,9 @@ import { Store } from '@/utils/Store'
 import { useRouter } from 'next/router'
 import Cookies from 'js-cookie'
 import {Controller, useForm } from 'react-hook-form'
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { getError } from '@/utils/error'
 
 
 export default function Login() {
@@ -27,6 +29,7 @@ export default function Login() {
    }
    },[])
    
+   
    const submitHandler = async ({email,password}) => {
     
     try {
@@ -34,14 +37,18 @@ export default function Login() {
         
         email,
         password,
-      });+
+      });
       
       dispatch({type:'USER_LOGIN',payload:data})
       
       Cookies.set('userinfo', JSON.stringify(data));
       router.push(redirect || '/' )    
     } catch (err) {
-      alert(err.response.data ? err.response.data.message : err.message);
+      
+      // alert(err.response.data ? err.response.data.message : err.message);
+      // toast.error(err.response.data ? err.response.data.message : err.message);
+      toast(getError(err))
+    
     }
   };
    return (
@@ -67,7 +74,8 @@ export default function Login() {
                   id="email"
                   label="Email"
                   inputProps={{ type: 'email' }}
-                  error={Boolean(errors.email)}
+                  error={(errors.email)}
+                
                   helperText={
                     errors.email
                       ? errors.email.type === 'pattern'

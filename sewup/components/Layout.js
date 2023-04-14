@@ -57,6 +57,11 @@ import { useRouter } from 'next/router'
     Cookies.remove('cartItems');
     router.push('/');
     }
+    function loginMenuCloseHandler(redirect){
+        if(redirect)
+        {router.push(redirect)}
+        
+    }
   return (
     <div>
         <Head>
@@ -88,8 +93,8 @@ import { useRouter } from 'next/router'
                               <React.Fragment>
                             <Button   {...bindTrigger(popupState)} className={classes.navbarButton} padding={10}> {userinfo.name}</Button>
                              <Menu {...bindMenu(popupState)}>
-                             <MenuItem onClick={popupState.close}>Profile</MenuItem>
-                             <MenuItem onClick={popupState.close}>My account</MenuItem>
+                             <MenuItem onClick={()=>{popupState.close(); loginMenuCloseHandler('/profile');}}>Profile</MenuItem>
+                             <MenuItem onClick={()=>{popupState.close(); loginMenuCloseHandler('/order-history');}}>Order History</MenuItem>
                              <MenuItem  onClick={() => { popupState.close(); logoutClickHandler();
         }} >Logout</MenuItem>
                            </Menu>
