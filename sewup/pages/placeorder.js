@@ -5,7 +5,7 @@ import { MenuItem,Card,List,Grid, Link,Select,Table,TableBody,TableCell, TableCo
 import React, { useContext, useEffect, useState } from 'react'
 import NextLink from 'next/link';
 import axios from 'axios';
-import CheckoutWizard from '@/components/CheckoutWizard';
+import CheckoutWizard from '@/components/checkoutWizard';
 import Image from 'next/image'
 import { useRouter } from 'next/router';
 import useStyles from '@/utils/Styles';

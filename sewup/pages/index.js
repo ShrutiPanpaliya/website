@@ -37,6 +37,8 @@ const addToCartHandler=async(product)=>{
                   <CardActionArea>
                     <CardMedia
                       component="img"
+                      height="450px"
+                      width="250px"
                       image={product.image}
                       title={product.name}
                     ></CardMedia>

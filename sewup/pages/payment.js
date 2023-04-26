@@ -6,7 +6,7 @@ import Cookies from 'js-cookie'
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 import { useContext } from 'react';
-import CheckoutWizard from '@/components/CheckoutWizard'
+import CheckoutWizard from '@/components/checkoutWizard';
 export default function Payment() {
     const classes =useStyles();
     const { state, dispatch } = useContext(Store);
